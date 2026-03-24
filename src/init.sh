@@ -11,7 +11,7 @@ ID_SUFFIX=$(date +%s)
 BUCKET_IN="ims-face-in-$ID_SUFFIX"
 BUCKET_OUT="ims-face-out-$ID_SUFFIX"
 FUNCTION_NAME="FaceRecognitionHandler"
-ROLE_ARN="arn:aws:iam::392435451870:role/LabRole"
+ROLE_ARN="arn:aws:iam::490789669163:role/LabRole"
 REGION="us-east-1"
  
 echo "--- Starte vollautomatisierte Installation ---"
@@ -46,7 +46,8 @@ aws lambda add-permission \
     --statement-id s3-invoke-perm \
     --action "lambda:InvokeFunction" \
     --principal s3.amazonaws.com \
-    --source-arn "arn:aws:s3:::$BUCKET_IN"
+    --source-arn "arn:aws:s3:::$BUCKET_IN" \
+    --region $REGION
  
 # 6. S3-Trigger (Event Notification) konfigurieren [cite: 20, 69]
 echo "Konfiguriere S3-Trigger..."
