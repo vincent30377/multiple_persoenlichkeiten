@@ -1,5 +1,4 @@
-# multiple_persoenlichkeiten
-M346 Projekt-Repository
+# multiple_persoenlichkeiten (M346 Projekt-Repository)
 
 Dieses Projekt implementiert einen serverlosen Dienst zur Gesichtserkennung (Celebrity Recognition) mit AWS Lambda, Amazon S3 und AWS Rekognition. Sobald ein Bild hochgeladen wird, analysiert der Service das Bild vollautomatisch auf bekannte Persönlichkeiten und speichert das Ergebnis als JSON ab.
 
@@ -21,7 +20,7 @@ graph TD
 ```
 
 *Legende zum Diagramm:* 
-Der Anwender lädt ein Bild in den Eingangsspeicher (S3 In-Bucket). Dieses Event triggert automatisch die AWS Lambda-Funktion, die dann das Bild zur Gesichtserkennung an AWS Rekognition weiterleitet. Das Analyseergebnis der Prominenten-Erkennung speichert die Lambda-Funktion anschließend im Ausgabespeicher (S3 Out-Bucket), woraufhin der Benutzer die fertige JSON-Datei abholen kann.
+Der Anwender lädt ein Bild in den Eingangsspeicher (S3 In-Bucket). Dieses Event triggert automatisch die AWS Lambda-Funktion, die dann das Bild zur Gesichtserkennung an AWS Rekognition weiterleitet. Das Analyseergebnis der Prominenten-Erkennung speichert die Lambda-Funktion anschliessend im Ausgabespeicher (S3 Out-Bucket), woraufhin der Benutzer die fertige JSON-Datei abholen kann.
 
 ### 1.2 Komponentenübersicht
 
@@ -33,7 +32,6 @@ Die folgende Tabelle listet die verwendeten AWS-Dienste und deren spezifische Fu
 | **FaceRecognitionHandler** | AWS Lambda | Das **Herzstück** (`src/lambda_function.py`). Verarbeitet das S3-Trigger-Event, führt die Logik aus und steuert die Bildanalyse. |
 | **Bildanalyse** | AWS Rekognition | Führt die **Celebrity Recognition** aus, also die KI-gestützte Erkennung der Gesichter im übergebenen Bild. |
 | **S3 Out-Bucket** | Amazon S3 | Dient als **Ausgabespeicher**. Legt das finale JSON-Dokument (`result-[Dateiname].json`) mit den Treffern ab. |
-
 
 ## 2. Inbetriebnahme (Setup)
 
@@ -69,3 +67,38 @@ Am Ende der erfolgreichen Ausführung gibt das Skript die dynamisch generierten 
    ```bash
    aws s3 cp s3://[NAME_DES_OUT_BUCKETS]/result-mein_bild.jpg.json .
    ```
+
+## 4. Testdokumentation
+
+Diese Sektion beinhaltet das offizielle Testprotokoll zur Überprüfung der AWS Face Recognition Pipeline.
+
+### Testfall 1 & 4: Installation und erfolgreiche Erkennung (Positiv-Test)
+
+In diesem kombinierten Testlauf wird die korrekte Ausführung des Setup-Skripts geprüft, gefolgt vom Upload eines Bildes (Jeff Bezos). Anschliessend wird verifiziert, ob die Rekognition-Lambda-Funktion eine korrekte JSON-Ausgabe im Out-Bucket erzeugt.
+
+**Allgemeine Angaben:**
+* **Testzeitpunkt:** 29.03.2026, ca. 19:10 Uhr
+* **Testperson:** Vincent Haucke
+* **Spezifische Informationen:** Das Setup und der Upload wurden über das Linux-Terminal (AWS CLI) durchgeführt. Testbild: `jeff_bezos.jpg`.
+
+**Durchführung & Ergebnisse:**
+
+1. **Infrastruktur-Bereitstellung (`init.sh`)**
+   Das Installationsskript wurde ausgeführt und hat fehlerfrei abgeschlossen. Die Buckets `ims-face-in-1774803619` und `ims-face-out-1774803619` wurden erfolgreich erstellt.
+   ![Erfolgreiche Installation](img/01_installation.png)
+
+2. **Upload in den IN-Bucket**
+   Das Bild `jeff_bezos.jpg` wurde mittels AWS CLI in den generierten In-Bucket kopiert.
+   ![Upload Jeff Bezos](img/02_upload.png)
+
+3. **Kontrolle des OUT-Buckets**
+   Nach wenigen Sekunden befand sich die generierte Resultat-Datei `result-Jeff_bezos.jpg.json` im Out-Bucket.
+   ![Resultat Datei generiert](img/03_result_datei.png)
+
+4. **Kontrolle der Ausgabe (JSON-Inhalt)**
+   Ein Blick in die formatierte JSON-Datei bestätigt, dass AWS Rekognition die Person "Jeff Bezos" richtig identifiziert hat.
+   ![Inhalt der JSON](img/04_json_inhalt.png)
+
+**Fazit & Massnahmen:**
+* **Fazit:** Beide Testfälle (Setup und Positiv-Test) waren **erfolgreich**. Die Infrastruktur greift nahtlos ineinander. Der Upload eines Bildes via Command Line triggert die Lambda-Funktion problemlos. Amazon Rekognition erkennt *Jeff Bezos* zuverlässig mit einer Confidence von 99.85%.
+* **Massnahmen/Empfehlungen:** Die Grundfunktionalität der Pipeline ist bestätigt. Wie im Konzept vorgesehen funktioniert sowohl das automatisierte Setup als auch die eigentliche Applikation fehlerfrei. Keine zwingenden Anpassungen an der Architektur nötig.
