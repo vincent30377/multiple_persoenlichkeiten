@@ -12,11 +12,11 @@ Das folgende Diagramm veranschaulicht den Datenfluss und das Zusammenspiel der A
 
 ```mermaid
 graph TD
-    User(["Anwender/in"]) -->|1. Lädt Bild (.jpg/.png) hoch| S3In[("S3 In-Bucket")]
-    S3In -->|2. Event: S3 ObjectCreated| Lambda["AWS Lambda (FaceRecognitionHandler)"]
-    Lambda <-->|3. Ruft Bild ab & sendet zur Image-Analyse| Rekog{"AWS Rekognition"}
-    Lambda -->|4. Speichert Ergebnis im JSON-Format| S3Out[("S3 Out-Bucket")]
-    S3Out -->|5. Lädt das Erkennungsergebnis herunter| User
+    User[Anwender] -->|1. Laedt Bild hoch| S3In[S3 In-Bucket]
+    S3In -->|2. S3 Trigger Event| Lambda[AWS Lambda Handler]
+    Lambda -->|3. Analyse aufrufen| Rekog[AWS Rekognition]
+    Lambda -->|4. JSON speichern| S3Out[S3 Out-Bucket]
+    S3Out -->|5. JSON Download| User
 ```
 
 *Legende zum Diagramm:* 
@@ -97,6 +97,7 @@ In diesem kombinierten Testlauf wird die korrekte Ausführung des Setup-Skripts 
 
 4. **Kontrolle der Ausgabe (JSON-Inhalt)**
    Ein Blick in die formatierte JSON-Datei bestätigt, dass AWS Rekognition die Person "Jeff Bezos" richtig identifiziert hat.
+   
    <img src="img/04_json_inhalt.png" alt="Inhalt der JSON" width="350" />
 
 **Fazit & Massnahmen:**
