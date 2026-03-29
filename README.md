@@ -12,10 +12,10 @@ Das folgende Diagramm veranschaulicht den Datenfluss und das Zusammenspiel der A
 
 ```mermaid
 graph TD
-    User([Anwender/in]) -->|1. Lädt Bild (.jpg/.png) hoch| S3In[(S3 In-Bucket)]
-    S3In -->|2. Event: S3 ObjectCreated| Lambda[AWS Lambda\n(FaceRecognitionHandler)]
-    Lambda <-->|3. Ruft Bild ab & sendet zur Image-Analyse| Rekog{AWS Rekognition}
-    Lambda -->|4. Speichert Ergebnis im JSON-Format| S3Out[(S3 Out-Bucket)]
+    User(["Anwender/in"]) -->|1. Lädt Bild (.jpg/.png) hoch| S3In[("S3 In-Bucket")]
+    S3In -->|2. Event: S3 ObjectCreated| Lambda["AWS Lambda (FaceRecognitionHandler)"]
+    Lambda <-->|3. Ruft Bild ab & sendet zur Image-Analyse| Rekog{"AWS Rekognition"}
+    Lambda -->|4. Speichert Ergebnis im JSON-Format| S3Out[("S3 Out-Bucket")]
     S3Out -->|5. Lädt das Erkennungsergebnis herunter| User
 ```
 
@@ -97,7 +97,7 @@ In diesem kombinierten Testlauf wird die korrekte Ausführung des Setup-Skripts 
 
 4. **Kontrolle der Ausgabe (JSON-Inhalt)**
    Ein Blick in die formatierte JSON-Datei bestätigt, dass AWS Rekognition die Person "Jeff Bezos" richtig identifiziert hat.
-   ![Inhalt der JSON](img/04_json_inhalt.png)
+   <img src="img/04_json_inhalt.png" alt="Inhalt der JSON" width="350" />
 
 **Fazit & Massnahmen:**
 * **Fazit:** Beide Testfälle (Setup und Positiv-Test) waren **erfolgreich**. Die Infrastruktur greift nahtlos ineinander. Der Upload eines Bildes via Command Line triggert die Lambda-Funktion problemlos. Amazon Rekognition erkennt *Jeff Bezos* zuverlässig mit einer Confidence von 99.85%.
